@@ -8,11 +8,10 @@
  * @example <div ui-uploader="{ url : '../../action/resource?action=uploadCoverLetter', allowedFileTypes : ['gif','png','jpg'] }" ng-model="someData"></div>
  */ 
 
-app_htmleditor_module.directive('uiUploader', function() {
+angular.module('ui.directives').directive('uiUploader',  ['$parse', function($parse) {
 	 return {
-		 require: 'ngModel',
-		 replace: true,
-	     link:	function(scope, elm, attrs, ngModel) {
+	     replace: false,
+		 link:	function(scope, elm, attrs) {
 			var expression = (attrs.uiUploader);
 			var params = scope.$eval(expression);
 			
@@ -30,13 +29,13 @@ app_htmleditor_module.directive('uiUploader', function() {
 				//i18n:i18n,
 				debug:false,
 				onComplete: function(id, fileName, responseJSON){
-	                 scope.$apply(function(){
-						scope[attrs.ngModel] = responseJSON;
-					});
+					var expr  = $parse(attrs.ngModel);
+					expr.assign(scope, responseJSON);
+					scope.$apply();
 				}
 			}); 
 		}
 	}
-});
+}]);
 
 
